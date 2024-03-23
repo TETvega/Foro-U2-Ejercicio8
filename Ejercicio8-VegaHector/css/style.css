@@ -1,0 +1,21 @@
+
+
+/* vw == ancho de pantalla */
+
+
+.wrap{
+    width: 100%;
+    height: 97vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(to bottom, rgb( 0 0 0 /0.7 ) , rgb( 0 0 0 /0.8 )), url(https://i.pinimg.com/originals/8f/62/37/8f6237c7b61c8762932740e7b3bbf5da.jpg);
+    background-size: cover;
+    background-position: center;
+}
+
+.wrap-texto{
+    color: white;
+    text-align: center;
+    width: 50%;
+}
