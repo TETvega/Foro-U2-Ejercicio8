@@ -1,5 +1,8 @@
 
 // obtencion de datos si no crea el arreglo vacio
+// localStorage.clear();
+// console.log(JSON.parse(localStorage));
+
 const usuarios = JSON.parse(localStorage.getItem("usuarios")) || localStorage.setItem("usuarios", JSON.stringify([
 
     // creacion del usuario SUDO 
@@ -120,31 +123,32 @@ btnCreateAccount.addEventListener("click", function() {
     return;
   }
 
-//  los datos para veriicar por el email si existe o no 
-const emailsExistentes = usuarios.map( user => user.email)
-// console.log(emailsExistentes);
-if(emailsExistentes.includes(email)){
-  alert("El correo esta en uso");
-  return;
-}
+    //  los datos para veriicar por el email si existe o no 
+    const emailsExistentes = usuarios.map( user => user.email)
+    console.log(emailsExistentes);
+    if(emailsExistentes.includes(email) || emailsExistentes == undefined){
+      alert("El correo esta en uso");
+      return;
+    }
 
-//Creacion del nuevo usuario
-const newUsuario = {
-  fullName: nombreCompleto,
-  email: email,
-  password: password,
-  taskList: [],
-};
+    //Creacion del nuevo usuario
+    const newUsuario = {
+      fullName: nombreCompleto,
+      email: email,
+      password: password,
+      categorias : [],  // para las categorias que existiran en comun 
+      taskList: [],
+    };
 
-// Apush del nuevo usuarios
-usuarios.push(newUsuario);
+    // Apush del nuevo usuarios
+    usuarios.push(newUsuario);
 
-// Guada o actualiza la lista de los usuarios
-localStorage.setItem("usuarios", JSON.stringify(usuarios));
+    // Guada o actualiza la lista de los usuarios
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
 
 
-alert("La cuenta se creo correctamente");
-formCreateAccount.reset();
+    alert("La cuenta se creo correctamente");
+    formCreateAccount.reset();
 });
 
 
