@@ -27,10 +27,10 @@ let dataTableIsInitialized = false;
 
 // Opnciones escitas al la tabla 
 const dataTableOptions = {
-    //scrollX: "2000px",
+    // scrollX: "2000px",
     lengthMenu: [5, 10, 15, 20], // cantidad de resgistros pr pagina
     columnDefs: [
-        { className: "centered", targets: [0, 1, 2, 3] },
+        { className: "centered", targets: [0, 1, 2, 3,4] },
         { orderable: false, targets: [0,2] },
         { searchable: false, targets: [2,3] }
         //{ width: "50%", targets: [0] }
@@ -255,19 +255,8 @@ document.addEventListener("click", function(e) {
             indiceFilaaEditar =-1
             // Función para crear el btn crear 
             
-            if (btnCrearIsDelete) {
-                const newButton = document.createElement("button"); 
-                newButton.setAttribute("type", "button"); 
-                newButton.setAttribute("id", "BTN_crearProducto"); 
-                newButton.classList.add("btn", "btn-primary", "d-inline-block", "mx-5", "mb-4"); 
-                newButton.innerHTML = '<i class="bi bi-plus-circle"></i> Crear'; 
-                const divContenedor = document.querySelector('.col-md.text-center');
-                const segundoElemento = divContenedor.children[1];
-                divContenedor.insertBefore(newButton, segundoElemento);
-                document.getElementById("BTN_modificarProducto").style.display = "none";
-                document.getElementById("BTN_eliminarProducto").style.display = "none";
-                btnCrearIsDelete=false
-            }
+            verificarBotonCrear()
+
                
             
         })
@@ -338,6 +327,7 @@ btnModificarProduct.addEventListener("click", async () => {
 
         // Limpiar el formulario
         document.getElementById("form_Product").reset();
+        verificarBotonCrear()
 
         // se completo la accion
         alert("El Producto se modifico correctamente");
@@ -389,6 +379,7 @@ try {
          eliminarCategoriasSinProductosExistentes()
          // Limpiar el formulario
          document.getElementById("form_Product").reset();
+         verificarBotonCrear()
  
          // se completo la accion
          alert("El Producto se Elimino correctamente");
@@ -456,4 +447,21 @@ function eliminarCategoriasSinProductosExistentes() {
     // console.log(indiceUsuario);
     usuarios[indiceUsuario] = infoUser;
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
+}
+
+
+function verificarBotonCrear() {
+    if (btnCrearIsDelete) {
+        const newButton = document.createElement("button"); 
+        newButton.setAttribute("type", "button"); 
+        newButton.setAttribute("id", "BTN_crearProducto"); 
+        newButton.classList.add("btn", "btn-primary", "d-inline-block", "mx-5", "mb-4"); 
+        newButton.innerHTML = '<i class="bi bi-plus-circle"></i> Crear'; 
+        const divContenedor = document.querySelector('.col-md.text-center');
+        const segundoElemento = divContenedor.children[1];
+        divContenedor.insertBefore(newButton, segundoElemento);
+        document.getElementById("BTN_modificarProducto").style.display = "none";
+        document.getElementById("BTN_eliminarProducto").style.display = "none";
+        btnCrearIsDelete=false
+    }
 }
