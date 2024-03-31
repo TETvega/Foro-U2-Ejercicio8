@@ -78,6 +78,8 @@
         <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"></use></svg>
         </a>
         <p class="text-muted">Hector© 2023</p>
+        <p class="text-muted">Hector Rene Martinez Vega</p>
+        <p class="text-muted">UNAH-CUROC 2024</p>
         </div>
         <div class="col mb-4">
         </div>
@@ -85,15 +87,14 @@
         <h5>Sección</h5>
         <ul class="nav flex-column">
         <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Inicio</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Documentacion</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Usos</a></li>
+        <li class="nav-item mb-2"><a href="Documentation.html" class="nav-link p-0 text-muted">Documentacion</a></li>
+        <li class="nav-item mb-2"><a href="Documentation.html#ususComunes" class="nav-link p-0 text-muted">Usos</a></li>
         </ul>
         </div>
         <div class="col mb-4">
         <h5>Sección</h5>
         <ul class="nav flex-column">
-        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Redes Sociales</a></li>
-        <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-muted">Acerca</a></li>
+        <li class="nav-item mb-2"><a href="Documentation.html#ususComunes" class="nav-link p-0 text-muted">Acerca</a></li>
         </ul>
         </div>
         </footer>
@@ -102,7 +103,7 @@
     <script>
         // ----------------------botones del apartado de INDEX --------------
             // Boton de iniciar secion
-            var btnIniciarSesion = document.getElementById("BTN_Index-GoToLogin");
+            const btnIniciarSesion = document.getElementById("BTN_Index-GoToLogin");
 
             //redirige a inicio de sesion el Login
             btnIniciarSesion.addEventListener("click", () => window.location.href = "login.html");

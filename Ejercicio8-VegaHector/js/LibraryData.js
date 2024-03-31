@@ -52,9 +52,12 @@ const dataTableOptions = {
             previous: "Anterior"
         }
     }
-};
+}; 
 
-const initDataTable = async () => {
+///////////////////////////// ------------------------ FILTRADO DE DATOS -------------------------------/////////////////////////////
+// variable Global para Filtar
+let filtroCategoria = ''
+const initDataTable = async ( ) => {
     if (dataTableIsInitialized) {
         dataTable.destroy();
     }
@@ -66,18 +69,22 @@ const initDataTable = async () => {
     dataTableIsInitialized = true;
 };
 
-const listProducts = async () => {
+
+///////////////////////////// ------------------------ Listar Productos existentes -------------------------------/////////////////////////////
+const listProducts = async ( ) => {
     try {
         const response = await retornaUsuarioActual();
         const productos = await response.taskList;
         const categorias = await response.categorias
-        console.log(productos);
-        console.log(categorias);
+        // console.log(productos);
+        // console.log(categorias);
 
         let selecCategorias = `<option value="">Seleccionar...</option>`;
         let content = ``;
         productos.forEach((producto, index) => {
-            content += `
+
+            if (filtroCategoria === "" || producto.categoria === filtroCategoria){
+                content += `
                 <tr>
                     <td>${producto.nombre}</td>
                     <td>${producto.categoria}</td>
@@ -87,22 +94,31 @@ const listProducts = async () => {
                         <button class="btn btn-sm btn-primary btn-edit"><i class="fa-solid fa-pencil"></i>Edit</button>
                     </td>
                 </tr>`;
+            }
+            
         });
 
         categorias.forEach( (categoria) => {
 
-            selecCategorias +=`
-            <option value="${categoria}">${categoria}</option>
-            `
+            let selected = "";
+            // si la variablle global de la categoria contiene una selecion se la asiga a la opcion de selecionado
+            if (filtroCategoria === categoria) {
+                selected = "selected";
+            }
+            selecCategorias += `
+                <option value="${categoria}" ${selected}>${categoria}</option>`;
             
         })
         tableBody_ListasProductos.innerHTML = content;
         selectCategoria.innerHTML = selecCategorias;
+        FiltrarCategoria.innerHTML =selecCategorias
+
+
     } catch (ex) {
         alert(ex);
     }
 };
-
+///////////////////////////// ------------------------ cargar los productos al iniciar la pagina -------------------------------/////////////////////////////
 window.addEventListener("load", async () => {
     await initDataTable();
 });
@@ -122,12 +138,12 @@ document.getElementById('selectCategoria').addEventListener('change', function()
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // -----------CONSTANTES BOTONES DEL APARTADO DE Formulario de DATa-----------
-// para saber si existe o no el boton 
-let btnCrearIsDelete=false; 
+
 let indiceFilaaEditar = -1
 
 // Boton que crea una nueva producto
 const btnCreateProduct = document.getElementById("BTN_crearProducto")
+
 const btnCleanForm = document.getElementById("BTN_limpiarFormulario")
 const btnModificarProduct = document.getElementById("BTN_modificarProducto")
 const btnElimarProducto = document.getElementById("BTN_eliminarProducto")
@@ -148,82 +164,84 @@ btnCleanForm.addEventListener("click" , () => {
 
 // boton para crear un producto 
 
-
-btnCreateProduct.addEventListener("click" , async() => {
+///////////////////////////// ------------------------ CREACION DE UN PRODUCTO-------------------------------/////////////////////////////
+btnCreateProduct.addEventListener("click" , async() => crearproducto() )
 //form_Product
-
-try {
+const crearproducto = async function() {
+    try {
     
-       // datos del formulario Crear Producto
-        const nombreProducto = document.getElementById("nombre_Producto").value;
-        const categoriaProducto = document.getElementById("categoria_Producto").value;
-        const cantidadProducto = document.getElementById("cantidad_Producto").value;
-        const estadoProducto = document.getElementById("estado_Producto").value;
-        
-            // validar que no se ingresen datos vacios 
-        if(!validarCampos(nombreProducto) || !validarCampos(categoriaProducto)|| !validarCampos(cantidadProducto) || !validarCampos(estadoProducto)){
-            alert("Alguno de los campos se encuentr vacio")
-            return
-        }
-        
-            const infoUser = retornaUsuarioActual();
-            const listaProductos = infoUser.taskList
-            // console.log(infoUser.taskList);
-            // console.log(infoUser);
-            // console.log(listaProductos);
-                // valor de la categoria
-        
-        
-        
-                // Validar si la categoraa ingresada ya existe
-                if (!infoUser.categorias.includes(categoriaProducto)) {
-                // La categoria no existe
-                    // CRAER UNA NUEVA CATEGORIA 
-        
-                    infoUser.categorias.push(categoriaProducto)
-                    alert(`Se creao una nueva categoria: ${categoriaProducto}`);
-                
-                }
-        
-                const newProducto = {
-                    nombre: nombreProducto,
-                    categoria: categoriaProducto,
-                    cantidad : cantidadProducto,
-                    estado: estadoProducto
-                }
-                
-                // agrega el nuevo producto 
-                listaProductos.push(newProducto);
-                
-                // console.log(infoUser);
-                // console.log(infoUser.fullName);
-                const usuarios = JSON.parse(localStorage.getItem("usuarios"));
-                const indiceUsuario = usuarios.findIndex(user => user.fullName === infoUser.fullName);
-        
-                // actualizar categorias y productos 
-                console.log(infoUser);
-                console.log(indiceUsuario);
-                console.log(usuarios);
-                console.log(listaProductos);
-                usuarios[indiceUsuario].categorias = infoUser.categorias;
-                usuarios[indiceUsuario].taskList = listaProductos;
-        
-                // Guardar los datos actualizados
-                localStorage.setItem("usuarios", JSON.stringify(usuarios));
-        
-                // Limpiar el formulario
-                document.getElementById("form_Product").reset();
-        
-                // mensaje de correcto
-                alert("Se ha agregado un nuevo producto correctamente");
+        // datos del formulario Crear Producto
+         const nombreProducto = document.getElementById("nombre_Producto").value;
+         const categoriaProducto = document.getElementById("categoria_Producto").value;
+         const cantidadProducto = document.getElementById("cantidad_Producto").value;
+         const estadoProducto = document.getElementById("estado_Producto").value;
+         
+             // validar que no se ingresen datos vacios 
+         if(!validarCampos(nombreProducto) || !validarCampos(categoriaProducto)|| !validarCampos(cantidadProducto) || !validarCampos(estadoProducto)){
+             alert("Alguno de los campos se encuentr vacio")
+             return
+         }
+         
+             const infoUser = retornaUsuarioActual();
+             const listaProductos = infoUser.taskList
+             // console.log(infoUser.taskList);
+             // console.log(infoUser);
+             // console.log(listaProductos);
+                 // valor de la categoria
+         
+         
+         
+                 // Validar si la categoraa ingresada ya existe
+                 if (!infoUser.categorias.includes(categoriaProducto)) {
+                 // La categoria no existe
+                     // CRAER UNA NUEVA CATEGORIA 
+         
+                     infoUser.categorias.push(categoriaProducto)
+                     alert(`Se creao una nueva categoria: ${categoriaProducto}`);
+                 
+                 }
+         
+                 const newProducto = {
+                     nombre: nombreProducto,
+                     categoria: categoriaProducto,
+                     cantidad : cantidadProducto,
+                     estado: estadoProducto
+                 }
+                 
+                 // agrega el nuevo producto 
+                 listaProductos.push(newProducto);
+                 
+                 // console.log(infoUser);
+                 // console.log(infoUser.fullName);
+                 const usuarios = JSON.parse(localStorage.getItem("usuarios"));
+                 const indiceUsuario = usuarios.findIndex(user => user.fullName === infoUser.fullName);
+         
+                 // actualizar categorias y productos 
+                //  console.log(infoUser);
+                //  console.log(indiceUsuario);
+                //  console.log(usuarios);
+                //  console.log(listaProductos);
+                 usuarios[indiceUsuario].categorias = infoUser.categorias;
+                 usuarios[indiceUsuario].taskList = listaProductos;
+         
+                 // Guardar los datos actualizados
+                 localStorage.setItem("usuarios", JSON.stringify(usuarios));
+         
+                 // Limpiar el formulario
+                 document.getElementById("form_Product").reset();
+         
+                 // mensaje de correcto
+                 alert("Se ha agregado un nuevo producto correctamente");
+ 
+                 await initDataTable(); 
+             
+ } catch (error) {
+     alert(error)
+ }
 
-                await initDataTable(); 
-            
-} catch (error) {
-    alert(error)
+
 }
 
-})
 // --------------------- BOTON DE EDITAR EN LAS FILAS DE LA TABLA -------------------------------
 
 
@@ -231,38 +249,39 @@ try {
 // esta funcion esta pendiente de todo el documento y espera un evento 
 // verifica si el evento es un click en una targeta que tenga la clase de bnt-edit 
 document.addEventListener("click", function(e) {
+    ///////////////////////////// ------------------------ EDITAR UN PRODUCTO-------------------------------/////////////////////////////
     if (e.target && e.target.classList.contains("btn-edit")) {
         // Obtener los datos segun la row en la que se preciono el click
-        const row = e.target.closest("tr");
+        const fila = e.target.closest("tr");
         // asignando valores a las constantes 
-        const nombre = row.cells[0].textContent;
-        const categoria = row.cells[1].textContent;
-        const cantidad = row.cells[2].textContent;
-        const estado = row.cells[3].textContent;
-        indiceFilaaEditar = indiceProductoAEditar(row)
+        const nombre = fila.cells[0].textContent;
+        const categoria = fila.cells[1].textContent;
+        const cantidad = fila.cells[2].textContent;
+        const estado = fila.cells[3].textContent;
+        indiceFilaaEditar = indiceProductoAEditar(fila)
         // llenando el formulario con los datos de la fila de la tabla
         document.getElementById("nombre_Producto").value = nombre;
         document.getElementById("categoria_Producto").value = categoria;
         document.getElementById("cantidad_Producto").value = cantidad;
         document.getElementById("estado_Producto").value = estado;
 
-        // Ocultando los botones de crear y mostrar los de editar y eliminar 
-        document.getElementById("BTN_crearProducto").remove();
-        btnCrearIsDelete=true
         document.getElementById("BTN_limpiarFormulario").addEventListener("click" , () => {
             // Limpiar el formulario
             document.getElementById("form_Product").reset();
             indiceFilaaEditar =-1
-            // Función para crear el btn crear 
-            
-            verificarBotonCrear()
 
-               
-            
         })
-        document.getElementById("BTN_modificarProducto").style.display = "inline-block";
-        document.getElementById("BTN_eliminarProducto").style.display = "inline-block";
     }
+
+    document.getElementById("FiltrarCategoria").addEventListener("change",  async function(e) {
+        // Obtener el valor de la categoría seleccionada
+        const categoriaSeleccionada = e.target.value;
+        
+        console.log(categoriaSeleccionada);
+        filtroCategoria = categoriaSeleccionada
+
+        await initDataTable()
+    });
 });
 
 
@@ -324,10 +343,9 @@ btnModificarProduct.addEventListener("click", async () => {
 
         localStorage.setItem("usuarios", JSON.stringify(usuarios));
         eliminarCategoriasSinProductosExistentes()
-
         // Limpiar el formulario
         document.getElementById("form_Product").reset();
-        verificarBotonCrear()
+        
 
         // se completo la accion
         alert("El Producto se modifico correctamente");
@@ -379,7 +397,6 @@ try {
          eliminarCategoriasSinProductosExistentes()
          // Limpiar el formulario
          document.getElementById("form_Product").reset();
-         verificarBotonCrear()
  
          // se completo la accion
          alert("El Producto se Elimino correctamente");
@@ -447,21 +464,4 @@ function eliminarCategoriasSinProductosExistentes() {
     // console.log(indiceUsuario);
     usuarios[indiceUsuario] = infoUser;
     localStorage.setItem("usuarios", JSON.stringify(usuarios));
-}
-
-
-function verificarBotonCrear() {
-    if (btnCrearIsDelete) {
-        const newButton = document.createElement("button"); 
-        newButton.setAttribute("type", "button"); 
-        newButton.setAttribute("id", "BTN_crearProducto"); 
-        newButton.classList.add("btn", "btn-primary", "d-inline-block", "mx-5", "mb-4"); 
-        newButton.innerHTML = '<i class="bi bi-plus-circle"></i> Crear'; 
-        const divContenedor = document.querySelector('.col-md.text-center');
-        const segundoElemento = divContenedor.children[1];
-        divContenedor.insertBefore(newButton, segundoElemento);
-        document.getElementById("BTN_modificarProducto").style.display = "none";
-        document.getElementById("BTN_eliminarProducto").style.display = "none";
-        btnCrearIsDelete=false
-    }
 }
